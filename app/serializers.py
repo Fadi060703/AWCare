@@ -1,11 +1,31 @@
 from .models import * 
 from rest_framework import serializers 
-from django.contrib.auth import get_user_model 
+from django.contrib.auth import get_user_model  
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer 
+
+User = get_user_model()
 
 class GroupSerializer( serializers.ModelSerializer ) :
     class Meta :
         model = Group 
         fields = [ 'id' , 'name' ] 
+
+class EmailTokenObtainSerializer( TokenObtainPairSerializer ) :
+    username_field = User.USERNAME_FIELD  
+    
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['email'] = self.user.email
+        data['user_id'] = self.user.id
+        return data   
+
+class CustomTokenObtainPairView(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        try:
+            attrs['username'] = attrs.get('email', '')
+            return super().validate(attrs)
+        except User.DoesNotExist:
+            raise serializers.ValidationError('Invalid credentials')
 
 class UserSerializer( serializers.ModelSerializer ) :
     password = serializers.CharField( write_only = True )
