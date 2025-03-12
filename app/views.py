@@ -11,9 +11,21 @@ from .serializers import *
 
 # Create your views here.
 
-class RegisterView( ListCreateAPIView ) :
+class UserRegisterView( ListCreateAPIView ) :
     queryset = get_user_model().objects.all() 
     serializer_class = UserSerializer 
+    permission_classes = [ permissions.AllowAny ]
+    
+    def post( self , request : Request , *args , **kwargs ) :
+        return super().post( request , *args , **kwargs )
+    def perform_create(self, serializer):
+        user = serializer.save( is_active=True )
+        user.set_password( serializer.validated_data['password'] )
+        user.save()
+        
+class DoctorRegisterView( ListCreateAPIView ) :
+    queryset = Doctor.objects.all() 
+    serializer_class = DoctorSerializer  
     permission_classes = [ permissions.AllowAny ]
     
     def post( self , request : Request , *args , **kwargs ) :

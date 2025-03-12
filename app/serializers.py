@@ -41,11 +41,21 @@ class UserSerializer( serializers.ModelSerializer ) :
     class Meta:
         model = get_user_model()
         fields = ['id', 'username', 'first_name' ,
-                  'last_name' , 'email', 'password' ,
-                  'phone_number', 'profile_image', 'group_ids','groups' ]
+                  'last_name' , 'email', 'gender' , 'password' ,
+                  'phone_number' , 'profile_image', 'group_ids','groups' ]
         
     def create(self, validated_data):
         group_ids = validated_data.pop( 'groups', [] )   
         user = get_user_model().objects.create( **validated_data )
         user.groups.set( group_ids )  
         return user
+    
+class DoctorSerializer( UserSerializer ) :
+    specialization = serializers.PrimaryKeyRelatedField(
+        queryset = Speicalization.objects.all() ,
+        required = True 
+    )
+    
+    class Meta :
+        model = Doctor 
+        fields = UserSerializer.Meta.fields + [ 'specialization' ] 
