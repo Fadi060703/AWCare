@@ -50,3 +50,26 @@ class UserSerializer( serializers.ModelSerializer ) :
         user.groups.set( group_ids )  
         return user
     
+class SpecializationSerializer( serializers.ModelSerializer ) :
+    class Meta :
+        model = Speicalization 
+        fields = [ 'specialization' ] 
+    
+class NationalitySerializer( serializers.ModelSerializer ) :
+    class Meta :
+        model = Nationality 
+        fields = [ 'country' ] 
+
+class LanguageSerializer( serializers.ModelSerializer ) :
+    class Meta :
+        model = Language
+        fields = [ 'name' ]
+    
+class DoctorProfileSerializer( serializers.ModelSerializer ) :
+    nationalities = NationalitySerializer( read_only = True ) 
+    languages = LanguageSerializer( read_only = True ) 
+    speicalization = SpecializationSerializer( read_only = True )
+    class Meta :
+        model = DoctorProfile 
+        fields = [ 'doc' , 'specialization' , 'sign' , 'service_type' , 'about_me' , 'nationalities' , 'languages' ] 
+        

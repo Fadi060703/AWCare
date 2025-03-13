@@ -4,7 +4,7 @@ from rest_framework import status , permissions
 from rest_framework.request import Request 
 from rest_framework.response import Response 
 from rest_framework.views import APIView 
-from rest_framework.generics import ListCreateAPIView 
+from rest_framework.generics import ListCreateAPIView , RetrieveUpdateDestroyAPIView 
 from rest_framework_simplejwt.views import TokenObtainPairView 
 from .models import * 
 from .serializers import * 
@@ -25,3 +25,28 @@ class UserRegisterView( ListCreateAPIView ) :
         
 class LoginView( TokenObtainPairView ) :
     serializer_class = EmailTokenObtainSerializer 
+    
+class SpecializationListCreateView( ListCreateAPIView ) :
+    queryset = Speicalization.objects.all() 
+    serializer_class = SpecializationSerializer 
+    
+class SpecializationDetailView( RetrieveUpdateDestroyAPIView ) :
+    queryset = Speicalization.objects.all() 
+    serializer_class = SpecializationSerializer 
+    
+class NationalityListCreateView( ListCreateAPIView ) :
+    queryset = Nationality.objects.all() 
+    serializer_class = NationalitySerializer 
+
+class NationalityListDetailView( RetrieveUpdateDestroyAPIView ) :
+    queryset = Nationality.objects.all() 
+    serializer_class = NationalitySerializer
+
+class ListCreateLanguageView( ListCreateAPIView ) :
+    queryset = Language.objects.all() 
+    serializer_class = LanguageSerializer 
+
+class LanguageDetailView( RetrieveUpdateDestroyAPIView ) :
+    queryset = Language.objects.all() 
+    serializer_class = LanguageSerializer 
+     
