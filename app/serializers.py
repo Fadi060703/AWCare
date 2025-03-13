@@ -50,12 +50,3 @@ class UserSerializer( serializers.ModelSerializer ) :
         user.groups.set( group_ids )  
         return user
     
-class DoctorSerializer( UserSerializer ) :
-    specialization = serializers.PrimaryKeyRelatedField(
-        queryset = Speicalization.objects.all() ,
-        required = True 
-    )
-    
-    class Meta :
-        model = Doctor 
-        fields = UserSerializer.Meta.fields + [ 'specialization' ] 

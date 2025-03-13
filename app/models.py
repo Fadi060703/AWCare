@@ -8,6 +8,18 @@ class Speicalization( models.Model ) :
     def __str__( self ) :
         return f'{ self.specialization }'
      
+class Nationality( models.Model ) :
+    country = models.CharField( max_length = 255 ) 
+    
+    def __str__( self ) :
+        return f'{ self.country }' 
+    
+class Language( models.Model ) :
+    name = models.CharField( max_length = 255 )       
+     
+    def __str__( self ) :
+        return f'{ self.name }'
+     
 class CustomUserManager( BaseUserManager ) :
     def create_user(self, email , password = None , **extra_fields ):
         if not email:
@@ -50,7 +62,24 @@ class CustomUser( AbstractUser , PermissionsMixin ) :
     def get_by_natural_key( self , email ) :
         return self.get( email = email )
 
-class Doctor( CustomUser ) :
-    specialization = models.ForeignKey( Speicalization , on_delete = models.CASCADE , related_name = 'spec' ) 
+class DoctorProfile( models.Model ) :
+    doc = models.OneToOneField( CustomUser , related_name = 'profile_owner' , on_delete = models.CASCADE ) 
+    speicalization = models.ForeignKey( Speicalization , on_delete = models.CASCADE , related_name = 'doc_spec' )
 
+    class FinanceSign( models.TextChoices ) :
+        DOLLAR = '$' , 'Dollar'
+        EURO = '€' , 'Euro' 
+        SYRIAN_POUND = 'SP' , 'Syrian Pound' 
+        TURKISH_LIRA = '₺' , 'Turkish Lira' 
+
+    sign = models.CharField( choices = FinanceSign.choices , max_length = 20 ) 
+    
+    class TypeOfService( models.TextChoices ) :
+        HOUR = 'Hour' 
+        SESSION = 'Session' 
+        
+    service_type = models.CharField( choices = TypeOfService.choices , max_length = 20 ) 
+    about_me = models.TextField() 
+    nationalities = models.ManyToManyField( Nationality ) 
+    languages = models.ManyToManyField( Language ) 
     
